@@ -1,7 +1,6 @@
-package rancheros
+package main
 
 import (
-	"github.com/dot1q/terraform-provider-rancheros/rancheros"
         "github.com/hashicorp/terraform/plugin"
         "github.com/hashicorp/terraform/terraform"
 )
