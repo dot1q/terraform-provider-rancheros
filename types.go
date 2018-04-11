@@ -5,6 +5,7 @@ import (
 )
 
 type ApiKeyDescriptor struct {
+	UUID		string
 	Name		string
 	Description	string
 	AccessKey	string
@@ -12,4 +13,5 @@ type ApiKeyDescriptor struct {
 	Host		string
 	GenAccessKey	string
 	GenSecretKey	string
+	ProjectId	string
 }
