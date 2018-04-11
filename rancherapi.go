@@ -27,33 +27,16 @@ func basicAuth(username, password string) string {
 }
 
 func genApiKey(obj *ApiKeyDescriptor) (_err error) {
-	req, _err := http.NewRequest("HEAD", fmt.Sprintf("%s/v2-beta/schemas/", obj.Host), nil)
-
-	if obj.AccessKey != "" && obj.SecretKey != "" {
-		req.Header.Add("Authorization","Basic " + basicAuth(obj.AccessKey,obj.SecretKey))
-	}
-
-	resp, _err := client.Do(req)
-
-	if _err != nil {
-	   return
-	}
-
-	// if not 200, it is bork
-	if resp.StatusCode != 200 {
-	   return fmt.Errorf("Unhandled HTTP code %s", strconv.Itoa(resp.StatusCode))
-	}
-
 	var jsonStr = []byte(fmt.Sprintf(`{"name":"%s","description":"%s"}`, obj.Name, obj.Description))
 
 	// go ahead and create the api key
-	req, _err = http.NewRequest("POST", fmt.Sprintf("%s/v2-beta/projects/%s/apiKeys", obj.Host, obj.ProjectId), bytes.NewBuffer(jsonStr))
+	req, _err := http.NewRequest("POST", fmt.Sprintf("%s/v2-beta/projects/%s/apiKeys", obj.Host, obj.ProjectId), bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
         if obj.AccessKey != "" && obj.SecretKey != "" {
 		req.Header.Add("Authorization","Basic " + basicAuth(obj.AccessKey,obj.SecretKey))
         }
 
-	resp, _err = client.Do(req)
+	resp, _err := client.Do(req)
 	if _err != nil {
 		return _err
 	}
@@ -83,33 +66,16 @@ func genApiKey(obj *ApiKeyDescriptor) (_err error) {
 }
 
 func readApiKey(obj *ApiKeyDescriptor) (_err error) {
-        req, _err := http.NewRequest("HEAD", fmt.Sprintf("%s/v2-beta/schemas/", obj.Host), nil)
-
-        if obj.GenAccessKey != "" && obj.GenSecretKey != "" {
-                req.Header.Add("Authorization","Basic " + basicAuth(obj.GenAccessKey,obj.GenSecretKey))
-        }
-
-        resp, _err := client.Do(req)
-
-        if _err != nil {
-           return
-        }
-
-        // if not 200, it is bork
-        if resp.StatusCode != 200 {
-           return fmt.Errorf("Unhandled HTTP code %s", strconv.Itoa(resp.StatusCode))
-        }
-
         var jsonStr = []byte(fmt.Sprintf(`{"name":"%s","description":"%s"}`, obj.Name, obj.Description))
 
         // go ahead and create the api key
-        req, _err = http.NewRequest("GET", fmt.Sprintf("%s/v2-beta/projects/%s/apiKeys/%s", obj.Host, obj.ProjectId, obj.UUID), bytes.NewBuffer(jsonStr))
+	req, _err := http.NewRequest("GET", fmt.Sprintf("%s/v2-beta/projects/%s/apiKeys/%s", obj.Host, obj.ProjectId, obj.UUID), bytes.NewBuffer(jsonStr))
         req.Header.Set("Content-Type", "application/json")
         if obj.GenAccessKey != "" && obj.GenSecretKey != "" {
                 req.Header.Add("Authorization","Basic " + basicAuth(obj.GenAccessKey,obj.GenSecretKey))
         }
 
-        resp, _err = client.Do(req)
+	resp, _err := client.Do(req)
         if _err != nil {
                 return _err
         }
@@ -141,33 +107,16 @@ func readApiKey(obj *ApiKeyDescriptor) (_err error) {
 }
 
 func updateApiKey(obj *ApiKeyDescriptor) (_err error) {
-	req, _err := http.NewRequest("HEAD", fmt.Sprintf("%s/v2-beta/schemas/", obj.Host), nil)
-
-	if obj.GenAccessKey != "" && obj.GenSecretKey != "" {
-		req.Header.Add("Authorization","Basic " + basicAuth(obj.GenAccessKey,obj.GenSecretKey))
-	}
-
-	resp, _err := client.Do(req)
-
-	if _err != nil {
-		return
-	}
-
-	// if not 200, it is bork
-	if resp.StatusCode != 200 {
-		return fmt.Errorf("Unhandled HTTP code %s", strconv.Itoa(resp.StatusCode))
-	}
-
 	var jsonStr = []byte(fmt.Sprintf(`{"name":"%s","description":"%s"}`, obj.Name, obj.Description))
 
 	// go ahead and update the api key
-	req, _err = http.NewRequest("PUT", fmt.Sprintf("%s/v2-beta/projects/%s/apiKeys/%s", obj.Host,obj.ProjectId, obj.UUID), bytes.NewBuffer(jsonStr))
+	req, _err := http.NewRequest("PUT", fmt.Sprintf("%s/v2-beta/projects/%s/apiKeys/%s", obj.Host,obj.ProjectId, obj.UUID), bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	if obj.GenAccessKey != "" && obj.GenSecretKey != "" {
 		req.Header.Add("Authorization","Basic " + basicAuth(obj.GenAccessKey,obj.GenSecretKey))
 	}
 
-	resp, _err = client.Do(req)
+	resp, _err := client.Do(req)
 	if _err != nil {
 		return _err
 	}
@@ -180,31 +129,14 @@ func updateApiKey(obj *ApiKeyDescriptor) (_err error) {
 }
 
 func delApiKey(obj *ApiKeyDescriptor) (_err error) {
-        req, _err := http.NewRequest("HEAD", fmt.Sprintf("%s/v2-beta/schemas/", obj.Host), nil)
-
-        if obj.GenAccessKey != "" && obj.GenSecretKey != "" {
-                req.Header.Add("Authorization","Basic " + basicAuth(obj.GenAccessKey,obj.GenSecretKey))
-        }
-
-        resp, _err := client.Do(req)
-
-        if _err != nil {
-		return
-        }
-
-        // if not 200, it is bork
-        if resp.StatusCode != 200 {
-           return fmt.Errorf("Unhandled HTTP code %s", strconv.Itoa(resp.StatusCode))
-        }
-
         // go ahead and create the api key
-        req, _err = http.NewRequest("POST", fmt.Sprintf("%s/v2-beta/projects/%s/apiKeys/%s?action=deactivate", obj.Host, obj.ProjectId, obj.UUID), nil)
+	req, _err := http.NewRequest("POST", fmt.Sprintf("%s/v2-beta/projects/%s/apiKeys/%s?action=deactivate", obj.Host, obj.ProjectId, obj.UUID), nil)
         req.Header.Set("Content-Type", "application/json")
         if obj.GenAccessKey != "" && obj.GenSecretKey != "" {
                 req.Header.Add("Authorization","Basic " + basicAuth(obj.GenAccessKey,obj.GenSecretKey))
         }
 
-        resp, _err = client.Do(req)
+	resp, _err := client.Do(req)
         if _err != nil {
                 return _err
         }
