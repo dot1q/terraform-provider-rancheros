@@ -73,18 +73,18 @@ func resourceApiKeyCreate(d *schema.ResourceData, m interface{}) error {
 
 	err := genApiKey(key)
 	if err != nil {
-	   return err
+		return err
 	}
 
-	d.SetId(key.UUID)
-
 	if err := d.Set("gen_access_key", key.GenAccessKey); err != nil {
-	   return err
+		return err
 	}
 
 	if err := d.Set("gen_secret_key", key.GenSecretKey); err != nil {
-	   return err
+		return err
 	}
+
+	d.SetId(key.UUID)
 
 	return nil
 }
@@ -135,14 +135,13 @@ func resourceApiKeyRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	if err := readApiKey(key); err != nil {
-		return err
+		d.SetId("")
+		return nil
 	}
 
 	err := d.Set("name", key.Name)
 	if err != nil {
-		d.SetId("")
-		return nil
-//		return err
+		return err
 	}
 
 	err = d.Set("description", key.Description)

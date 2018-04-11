@@ -9,6 +9,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"io/ioutil"
+	"hash/fnv"
 )
 
 // Ignore invalid certs
@@ -19,6 +20,12 @@ var transport = &http.Transport {
 // Set http client
 var client = &http.Client {
 	Transport: transport,
+}
+
+func hash(s string) string {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return fmt.Sprint(h.Sum32())
 }
 
 func basicAuth(username, password string) string {
@@ -146,4 +153,41 @@ func delApiKey(obj *ApiKeyDescriptor) (_err error) {
 	}
 
 	return nil
+}
+
+func genLocalAuthConfig(obj *LocalAuthConfigDescriptor) (_err error) {
+        var jsonStr = []byte(fmt.Sprintf(`{"id":null,"type":"localAuthConfig","baseType":"localAuthConfig","accessMode":"%s","enabled":%t,"name":"%s","password":"%s","username":"%s"}`, obj.Accessmode, obj.Enabled, obj.Realname, obj.Password, obj.Username))
+
+        req, _err := http.NewRequest("POST", fmt.Sprintf("%s/v2-beta/localAuthConfigs", obj.Host), bytes.NewBuffer(jsonStr))
+        req.Header.Set("Content-Type", "application/json")
+        if obj.AccessKey != "" && obj.SecretKey != "" {
+                req.Header.Add("Authorization","Basic " + basicAuth(obj.AccessKey,obj.SecretKey))
+        }
+
+        resp, _err := client.Do(req)
+        if _err != nil {
+                return _err
+        }
+
+        if resp.StatusCode != 201 {
+                return fmt.Errorf("Unhandled HTTP code %s for genereating the localauthconfig", strconv.Itoa(resp.StatusCode))
+        }
+
+        // close the body stream
+        defer resp.Body.Close()
+
+        // make sure the json can parse
+        out, _err := ioutil.ReadAll(resp.Body)
+
+        if _err != nil {
+                return _err
+        }
+
+	//return fmt.Errorf("%s", []byte(out))
+
+        var jsonResult map[string]interface{}
+        json.Unmarshal([]byte(out), &jsonResult)
+        obj.UUID         = hash(obj.Username+obj.Host)
+
+        return
 }

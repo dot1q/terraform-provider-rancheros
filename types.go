@@ -15,3 +15,16 @@ type ApiKeyDescriptor struct {
 	GenSecretKey	string
 	ProjectId	string
 }
+
+type LocalAuthConfigDescriptor struct {
+	UUID		string
+	Host		string
+	AccessKey	string
+	SecretKey	string
+	ProjectId	string
+	Realname	string
+	Username	string
+	Password	string
+	Enabled		bool
+	Accessmode	string
+}
