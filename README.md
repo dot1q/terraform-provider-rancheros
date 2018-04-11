@@ -21,6 +21,8 @@ resource "rancheros_apikey" "temp" {
   secret_key = "y7i5uXz5oLwzrFHooQiwkuDKLbvdatm5P75d7tLk"
 }
 ```
+Note: When rancher is in an unauth state and the access_key and secret_key are not set, upon successful creation of an API key, the generated (gen_access_key, gen_secret_key) are also stored in the access_key and secret_key template elements. If they are specified, secret_key and access_key are not changed upon successful creation of an API key.
+
 #### Argument Reference
 * host (required) - protocol://address:port of the rancher cluster or instance
 * access_key (optional) - If auth is already enabled, you must specify a valid API access key to use
